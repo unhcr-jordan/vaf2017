@@ -11,22 +11,33 @@ library(koboloadeR)
 
 ### Load the data
 cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
-household <- read.csv("data/data2.csv", encoding = "UTF-8", na.strings = "NA")
+
+
+household <- read.csv("data/household.csv", encoding="UTF-8", na.strings="NA")
+CaseInformation <- read.csv("data/CaseInformation.csv", encoding="UTF-8", na.strings="NA")
+IndividaulBioData <- read.csv("data/IndividaulBioData.csv", encoding="UTF-8", na.strings="NA")
+InformationNotRegFamilies <- read.csv("data/InformationNotRegFamilies.csv", encoding="UTF-8", na.strings="NA")
 
 ###Form##########################################
 ## Load form
 cat("\n\n Building dictionnary from the xlsform \n")
 #rm(form)
-#form <- "form.xls"
+form <- "form.xls"
 ## Generate & Load dictionnary
-kobo_dico(form)
+#kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
 #rm(form)
 
 
 ## label Variables
 cat("\n\n Labelling variables \n")
+
+## label Variables
 household <- kobo_label(household , dico)
+CaseInformation <- kobo_label(CaseInformation , dico)
+IndividaulBioData <- kobo_label(IndividaulBioData , dico)
+InformationNotRegFamilies <- kobo_label(InformationNotRegFamilies , dico)
+
 
 
 ## Get a list of variables to be used for disaggregation #######
@@ -112,25 +123,38 @@ for( i in 1:nrow(chapters) )
 
 
   ## TO DO: Use config file to load the different frame
-  cat("household <- read.csv(paste0(mainDirroot,\"/data/data2.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file = chapter.name , sep="\n", append=TRUE)
 
-  cat("## label Variables", file = chapter.name , sep="\n", append=TRUE)
-  cat("household <- kobo_label(household , dico)", file = chapter.name , sep="\n", append=TRUE)
+  cat("household <- read.csv(paste0(mainDirroot,\"/data/household.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("CaseInformation <- read.csv(paste0(mainDirroot,\"/data/CaseInformation.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("IndividaulBioData <- read.csv(paste0(mainDirroot,\"/data/IndividaulBioData.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("InformationNotRegFamilies <- read.csv(paste0(mainDirroot,\"/data/InformationNotRegFamilies.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+
+  cat("## label Variables", file=chapter.name , sep="\n", append=TRUE)
+  cat("household <- kobo_label(household , dico)", file=chapter.name , sep="\n", append=TRUE)
+  cat("CaseInformation <- kobo_label(CaseInformation , dico)", file=chapter.name , sep="\n", append=TRUE)
+  cat("IndividaulBioData <- kobo_label(IndividaulBioData , dico)", file=chapter.name , sep="\n", append=TRUE)
+  cat("InformationNotRegFamilies <- kobo_label(InformationNotRegFamilies , dico)", file=chapter.name , sep="\n", append=TRUE)
 
 
-  ## To do use configuration file to weight the data #######
-  cat("## Create weighted survey object", file = chapter.name , sep="\n", append=TRUE)
 
-
-  #cat("data.survey <- svydesign(ids = ~ section1.location.district ,  data = data,  weights = ~Normalized.Weight ,  fpc = ~fpc )", file = chapter.name , sep="\n", append=TRUE)
-  ## If no weight, the weighted object is unweigthted
+  ## To do use configuration file to weight the data
+  cat("## Create weighted survey object", file=chapter.name , sep="\n", append=TRUE)
+  ## Below is an unweighted survey design - you may adjust as necessary!
+  #cat("household.survey <- svydesign(ids = ~ section1.location.district ,  data = household,  weights = ~Normalized.Weight)", file=chapter.name , sep="\n", append=TRUE)
   cat("household.survey <- svydesign(ids = ~ 1 ,  data = household )", file = chapter.name , sep="\n", append=TRUE)
+
+  #cat("CaseInformation.survey <- svydesign(ids = ~ section1.location.district ,  data = CaseInformation ,  weights = ~Normalized.Weight)", file=chapter.name , sep="\n", append=TRUE)
+  #cat("IndividaulBioData.survey <- svydesign(ids = ~ section1.location.district ,  data = IndividaulBioData ,  weights = ~Normalized.Weight)", file=chapter.name , sep="\n", append=TRUE)
+  cat("CaseInformation.survey <- svydesign(ids = ~ 1  ,  data = CaseInformation)", file=chapter.name , sep="\n", append=TRUE)
+  cat("IndividaulBioData.survey <- svydesign(ids = ~ 1  ,  data = IndividaulBioData)", file=chapter.name , sep="\n", append=TRUE)
+  cat("InformationNotRegFamilies.survey <- svydesign(ids = ~ 1  ,  data = InformationNotRegFamilies)", file=chapter.name , sep="\n", append=TRUE)
 
   cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append=TRUE)
 
 
+
   ### To DO : Offer option to insert in the report skeleton interpretation questions
-  ###selectone.quali####################################################################
+  ### Introduction chapter####################################################################
   cat(paste("# Introduction\n"),file = chapter.name ,sep="\n",append=TRUE)
   cat(paste("This data crunching report allows to quickly explore the results of the survey that can be regenerated as needed."),file = chapter.name ,sep="\n",append=TRUE)
   cat(paste("You can:  \n "),file = chapter.name ,sep="\n",append=TRUE)
@@ -166,7 +190,7 @@ for( i in 1:nrow(chapters) )
     questions.label <- as.character(chapterquestions[ j , c("label")])
     questions.listname <- as.character(chapterquestions[ j , c("listname")])
     questions.variable <- paste0(questions.frame,"$",questions.name)
-    cat(paste("\n", j, " - Render question: ", questions.variable,"\n" ))
+    cat(paste("\n", j, " - Render question: ", questions.variable, " -",questions.type, "\n" ))
 
     ## write question name-------
     cat("\n ",file = chapter.name , sep="\n",append=TRUE)
@@ -474,13 +498,19 @@ for( i in 1:nrow(chapters) )
       ## Close chunk
       cat(paste0("\n```\n", sep = '\n'), file = chapter.name, append=TRUE)
 
-      ###Decimal.relation###########################################################################
-      cat(paste("### Analysis of relationship" ,sep=""),file = chapter.name ,sep="\n",append=TRUE)
-
-      if (nrow(frequ) %in% c("0","1")){
-        cat(paste0("cat(\"No responses recorded for this question...\")"),file = chapter.name , sep="\n", append=TRUE)
-        cat("No responses recorded for this question...\n")
+      ###Decimal.crosstabulation###########################################################################
+      if( nrow(disaggregation)==0 ) {
+        cat("No disaggregation requested for this question...\n",file = chapter.name , sep="\n", append=TRUE)
+        cat("No disaggregation requested for this question...\n")
+        cat("\n", file = chapter.name, append=TRUE)
+      } else if (nrow(frequ) %in% c("0","1")){
+        # cat("No responses recorded for this question. No disaggregation...\n",file = chapter.name , sep="\n", append=TRUE)
+        cat("No responses recorded for this question. No disaggregation...\n")
+        cat("\n", file = chapter.name, append=TRUE)
       } else {
+
+
+        cat(paste("### Analysis of relationship" ,sep=""),file = chapter.name ,sep="\n",append=TRUE)
         for(h in 1:nrow(disaggregation))
         {
           #h <-1
@@ -708,6 +738,4 @@ for(i in 1:nrow(chapters)) {
 #rmarkdown::render('report-tabulation.Rmd')
 
 cat(" Done!! Reports are in the folder OUT - Review the report- Adjust your configuration files and you will be very soon ready to start the qualitative analysis and the analysis workshops...")
-
-
 
