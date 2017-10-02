@@ -154,12 +154,13 @@ packages <- c(
 
   "RCurl", ##used to download files from API -install CURL before and separately
   "devtools", # package used to load packages hosted in github --
-
+  "curl",
 #  "gmailr", # Access gmail api
 #  "RGtk2",
 #  "rattle", ## GUI for data mining
   ## used to generate reports
-  "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
+  "knitr", "pander", "xtable", "rmarkdown"
+#, "kableExtra","koRpus", "tables"
 )
 
 ## identify packages not installed yet
@@ -174,9 +175,9 @@ rm(packages)
 #remove.packages("tibble")
 #install.packages("tibble")
 library("knitr")
-library("kableExtra")
-library("koRpus")
-library("tables")
+#library("kableExtra")
+#library("koRpus")
+#library("tables")
 library("rmarkdown")
 
 library("survey")
@@ -189,7 +190,7 @@ library("stringr")
 library("stringi")
 #library("lattice")
 #library("rattle")
-library("car")
+#library("car")
 library("plyr")
 library("ggplot2") ## The grammar of graphics!
 library("extrafont") ## Additional fonts
@@ -199,11 +200,11 @@ library("reshape2") ## Restructure data between wide and long format before plot
 #library("maptools") ## Create maps
 #library("rgdal") ## Open geographic files
 #library("rgeos")
-library("ggmap") ## get background map from google map
-library("sp") ## Spatial library
+#library("ggmap") ## get background map from google map
+#library("sp") ## Spatial library
 #library("raster") ## Managing raster dataset
 library("RColorBrewer") ## Color palette
-library("classInt") ## Classififcation
+#library("classInt") ## Classififcation
 library("hexbin") ## Hexa binning
 library("lubridate")
 library("date")
