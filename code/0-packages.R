@@ -34,7 +34,7 @@ packages <- c(
   #"lattice", # Visualisation
  "graphics",
   "ggplot2", ## advanced graphics
-  "ggseas", ## seasonal adjustemnt with GGplot2
+#  "ggseas", ## seasonal adjustemnt with GGplot2
   "ggrepel", ## getting nice labels in ggplot2
   #"ggvis", ## interactive grammar of graphics
   "ggthemes", ## Customised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
@@ -48,15 +48,15 @@ packages <- c(
   #"xkcd", ## Style from the xkcd comics
   #"scatterplot3d",
   "corrplot", # Visualiation of correlation Matrix
-  "igraph", #network analysis and visualisation
+ # "igraph", #network analysis and visualisation
   "ellipse",  ## drawing ellipses and ellipse-like confidence regions
   #"factoextra", ## Visualize the Results of Multivariate Data Analyses
 
   ##### Packages for Mapping
-  "rgdal","rgeos","sp","maptools", ## standard Geo manipulation packages
-  "ggmap", ## get background from webmapping API
-  "raster","cartography", ## packages used for the maps --
-  "classInt",  ## used for univariate classification
+  #"rgdal","rgeos","sp","maptools", ## standard Geo manipulation packages
+  #"ggmap", ## get background from webmapping API
+  #"raster","cartography", ## packages used for the maps --
+  #"classInt",  ## used for univariate classification
  # "deldir", # delaunay triangulation & Voronoi
  # "viridis", # Default Color Maps from 'matplotlib'
  # "fields", ## Tools for Spatial Data
@@ -138,7 +138,7 @@ packages <- c(
 
   "formatR", #  used to format the code
 
-  "parallel", ## Improve performance
+#  "parallel", ## Improve performance
   "Rcpp", ## used to compile some pacjckages
 
   "foreign", ## read data from SPSS, SAS or Stata
@@ -156,7 +156,7 @@ packages <- c(
   "devtools", # package used to load packages hosted in github --
 
 #  "gmailr", # Access gmail api
-  "RGtk2",
+#  "RGtk2",
 #  "rattle", ## GUI for data mining
   ## used to generate reports
   "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
