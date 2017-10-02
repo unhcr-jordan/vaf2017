@@ -159,8 +159,7 @@ packages <- c(
 #  "RGtk2",
 #  "rattle", ## GUI for data mining
   ## used to generate reports
-  "knitr", "pander", "xtable", "rmarkdown"
-#, "kableExtra","koRpus", "tables"
+  "knitr", "pander", "xtable", "rmarkdown", "kableExtra","koRpus", "tables"
 )
 
 ## identify packages not installed yet
@@ -175,7 +174,7 @@ rm(packages)
 #remove.packages("tibble")
 #install.packages("tibble")
 library("knitr")
-#library("kableExtra")
+library("kableExtra")
 #library("koRpus")
 #library("tables")
 library("rmarkdown")
