@@ -79,7 +79,11 @@ rm(progrescase)
 # We need first to recategorise Gov
 #levels(as.factor(universe$coal1Cat))
 
+prop.table(table(universe$familyprofile, universe$dem_sex))
+
 data$key <- data$HouseholdInformation.Governorate
+data$key2 <- paste(data$key,data$familyprofile, data$dem_sex)
+
 #levels(as.factor(data$key))
 coal1cat <- levels(as.factor(data$key))
 universe$COA_L1 <- as.character(universe$coal1)
@@ -104,7 +108,10 @@ universe <- universe[universe$COA_L1 %in% coal1cat, ]
 universe.COA_L1 <- as.data.frame(table(universe$COA_L1))
 names(universe.COA_L1)[1] <- "COA_L1"
 
+universe$key2 <- paste(universe$key,universe$familyprofile, universe$dem_sex, sep = "-" )
+
 universe.key <- as.data.frame(table(universe$key))
+universe.key2 <- as.data.frame(table(universe$key2))
 names(universe.key)[1] <- "key"
 write.csv(universe.key, "out/universekey.csv", row.names=FALSE)
 
@@ -123,6 +130,16 @@ data.svy.rake.coa <- rake(
   sample.margins = list( ~ key),
   population.margins = list(universe.key)
 )
+weights.replication <- as.data.frame(weights(data.svy.rake.coa,type="replication", final=FALSE))
+weights.sampling <- as.data.frame(weights(data.svy.rake.coa,type="sampling", final=FALSE))
+weights.sampling <- as.data.frame(weights(data.svy.rake.coa,type="sampling", final=TRUE))
+
+weights.analysis <- as.data.frame(weights(data.svy.rake.coa,type="analysis", final=FALSE))
+
+summary(weights.analysis)
+names(weights.analysis)[1] <- "weight"
+weights.analysis$weight2 <- weights.analysis$weight/100
+write.csv(weights.analysis, "out/weight.csv", row.names = FALSE)
 
 cat("Trim weight for area of Asylumn\n")
 data.svy.rake.trim <- trimWeights(data.svy.rake.coa,
@@ -130,88 +147,4 @@ data.svy.rake.trim <- trimWeights(data.svy.rake.coa,
                                   upper = 3,
                                   strict = TRUE)
 
-### Add Case size stata
-
-#data$Case.size2 <- data$size
-#levels(as.factor(data$Case.size2))
-#prop.table(table(data$Case.size, useNA = "ifany"))
-#check <- data[is.na(data$Case.size2),]
-
-#data$Case.size <- car::recode(data$Case.size2,"'Case.size.1'='Case.size.1';
-#                                 'Case.size.2'='Case.size.2';
-#                                 'Case.size.3'='Case.size.3.to.5';
-#                                 'Case.size.4'='Case.size.3.to.5';
-#                                 'Case.size.5'='Case.size.3.to.5';
-#                                 'Case.size.over.5'='Case.size.6.and.more';
-#                                 'Case.size.over.5'='Case.size.6.and.more'")
-#universe$Case.size2 <- universe$Case.size
-#universe$Case.size <- car::recode(universe$Case.size,"'Case.size.1'='Case.size.1';
-#                                 'Case.size.2'='Case.size.2';
-#                                 'Case.size.3'='Case.size.3.to.5';
-#                                 'Case.size.4'='Case.size.3.to.5';
-#                                 'Case.size.5'='Case.size.3.to.5';
-#                                 'Case.size.6'='Case.size.6.and.more';
-#                                 'Case.size.7.and.more'='Case.size.6.and.more'")#
-
-
-#data$key2 <- paste(data$ctr,data$COO_L1,data$Case.size,sep="-")
-#universe$key2 <- paste(universe$ctr,universe$COO_L1,universe$Case.size,sep="-")
-
-#prop.table(table(data$key2, useNA = "ifany"))
-#prop.table(table(universe$key2, useNA = "ifany"))
-#universe.key2 <- as.data.frame(table(universe$key2))
-#names(universe.key2)[1] <- "key2"
-#data.key2 <- as.data.frame(table(data$key2))
-cat("post stratification on area of Origin & case size\n")
-## Try post stratification on ctr, area of Origin & case size
-data.svy.rake.coa.size <- rake(
-  design = data.svy.unweighted,
-  sample.margins = list( ~ key2),
-  population.margins = list(universe.key2)
-)
-cat("Trim weight for Asylum area & Case size\n")
-data.svy.rake.trim2 <- trimWeights(data.svy.rake.coa.size,
-                                  lower = 0.3,
-                                  upper = 3,
-                                  strict = TRUE)
-
-
-
-###################################################
-### Compile a table to show impact of wieighting approach
-
-cat("Compile a matrix of comparison between weighting\n")
-compare.weight <- t(
-  cbind(
-    svyby(
-      ~ group_intro.goingback,
-      by =  ~ ctr,
-      design = data.svy.unweighted,
-      FUN = svymean
-    ),
-    svyby(
-      ~ group_intro.goingback,
-      by =  ~ ctr,
-      design = data.svy.rake.coa,
-      FUN = svymean
-    ),
-    svyby(
-      ~ group_intro.goingback,
-      by =  ~ ctr,
-      design = data.svy.rake.coa.size,
-      FUN = svymean
-    ),
-    svyby(
-      ~ group_intro.goingback,
-      by =  ~ ctr,
-      design = data.svy.rake.trim,
-      FUN = svymean
-    ),
-    svyby(
-      ~ group_intro.goingback,
-      by =  ~ ctr,
-      design = data.svy.rake.trim2,
-      FUN = svymean
-    )))
-
-
+weights <- as.data.frame(weights(data.svy.rake.trim))

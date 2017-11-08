@@ -7,6 +7,7 @@ rm(list = ls())
 mainDir <- getwd()
 ## Load all required packages
 source(paste0(mainDir,"/code/0-packages.R"))
+source(paste0(mainDir,"/code/0-config.R"))
 
 ### Double Check that you have the last version
 #source("https://raw.githubusercontent.com/Edouard-Legoupil/koboloadeR/master/inst/script/install_github.R")
@@ -24,8 +25,8 @@ library(koboloadeR)
 
 cat("\n\n Build dictionnary from the xlsform \n")
 
-rm(form)
-form <- "form.xls"
+#rm(form)
+#form <- "form.xls"
 ## Generate & Load dictionnary
 kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
