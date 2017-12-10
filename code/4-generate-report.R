@@ -13,18 +13,18 @@ library(koboloadeR)
 cat("\n\n Loading data. It is assumed that the cleaning, weighting & re-encoding has been done previously \n")
 
 
-household <- read.csv("data/household.csv", encoding="UTF-8", na.strings="NA")
-CaseInformation <- read.csv("data/CaseInformation.csv", encoding="UTF-8", na.strings="NA")
-IndividaulBioData <- read.csv("data/IndividaulBioData.csv", encoding="UTF-8", na.strings="NA")
-InformationNotRegFamilies <- read.csv("data/InformationNotRegFamilies.csv", encoding="UTF-8", na.strings="NA")
+household <- read.csv("data/household2.csv", encoding="UTF-8", na.strings="NA")
+CaseInformation <- read.csv("data/CaseInformation2.csv", encoding="UTF-8", na.strings="NA")
+IndividaulBioData <- read.csv("data/IndividaulBioData2.csv", encoding="UTF-8", na.strings="NA")
+InformationNotRegFamilies <- read.csv("data/InformationNotRegFamilies2.csv", encoding="UTF-8", na.strings="NA")
 
 ###Form##########################################
 ## Load form
 cat("\n\n Building dictionnary from the xlsform \n")
 #rm(form)
-form <- "form.xls"
+#form <- "form.xls"
 ## Generate & Load dictionnary
-kobo_dico(form)
+#kobo_dico(form)
 dico <- read.csv(paste("data/dico_",form,".csv",sep = ""), encoding = "UTF-8", na.strings = "")
 #rm(form)
 
@@ -122,10 +122,10 @@ for( i in 1:nrow(chapters) )
 
   ## TO DO: Use config file to load the different frame
 
-  cat("household <- read.csv(paste0(mainDirroot,\"/data/household.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
-  cat("CaseInformation <- read.csv(paste0(mainDirroot,\"/data/CaseInformation.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
-  cat("IndividaulBioData <- read.csv(paste0(mainDirroot,\"/data/IndividaulBioData.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
-  cat("InformationNotRegFamilies <- read.csv(paste0(mainDirroot,\"/data/InformationNotRegFamilies.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("household <- read.csv(paste0(mainDirroot,\"/data/household2.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("CaseInformation <- read.csv(paste0(mainDirroot,\"/data/CaseInformation2.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("IndividaulBioData <- read.csv(paste0(mainDirroot,\"/data/IndividaulBioData2.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
+  cat("InformationNotRegFamilies <- read.csv(paste0(mainDirroot,\"/data/InformationNotRegFamilies2.csv\"), encoding=\"UTF-8\", na.strings=\"NA\")", file=chapter.name , sep="\n", append=TRUE)
 
   cat("## label Variables", file=chapter.name , sep="\n", append=TRUE)
   cat("household <- kobo_label(household , dico)", file=chapter.name , sep="\n", append=TRUE)

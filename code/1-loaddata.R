@@ -158,10 +158,54 @@ InformationNotRegFamilies <- kobo_split_multiple(InformationNotRegFamilies, dico
 InformationNotRegFamilies <- kobo_encode(InformationNotRegFamilies, dico)
 InformationNotRegFamilies <- kobo_label(InformationNotRegFamilies , dico)
 
+
+
+
+#######################################################################
+### Edit data-sets before creating indicators #########################
+#######################################################################
+## Create standard HH and Case identification variables
+
+IndividaulBioData$HH_KEY <- as.character(lapply(strsplit(as.character(IndividaulBioData$PARENT_KEY), split = "/"), "[", 1))
+IndividaulBioData$Case_Key <- IndividaulBioData$PARENT_KEY
+
+InformationNotRegFamilies$count <- rownames(InformationNotRegFamilies)
+InformationNotRegFamilies$HH_KEY <- InformationNotRegFamilies$PARENT_KEY
+
+# No case_key because they're not part of a registered case!
+CaseInformation$HH_KEY <- CaseInformation$PARENT_KEY
+CaseInformation$Case_Key <- CaseInformation$KEY
+household$HH_KEY <- household$KEY
+
+## Merge key variables from HH data onto case data for mapping
+FoodSecurityShared <- household$FoodSecurityHH
+CopingStrategiesShared <- household$IstheHouseHoldProvetyCoping
+ExpendituresShared <- household$FinancialSituation.AsHouseHoldExp
+household$HH.TotalReg <- dcast(IndividaulBioData, IndividaulBioData$HH_KEY ~  (IndividaulBioData$IndiviualInformation.AgeOfIndividual  >= 0))[, c("TRUE")]
+HH.TotalReg <- dcast(IndividaulBioData, IndividaulBioData$HH_KEY ~  (IndividaulBioData$IndiviualInformation.AgeOfIndividual  >= 0))[, c("TRUE")]
+HH_KEY <- household$HH_KEY
+Map <- data.frame(cbind(FoodSecurityShared, CopingStrategiesShared, ExpendituresShared, HH.TotalReg, HH_KEY))
+CaseInformation <- join(CaseInformation, Map, by = 'HH_KEY', type = 'left', match = 'all')
+
+## Create same sorting order for each data set
+household <- household[order(household$HH_KEY),]
+CaseInformation <- CaseInformation[order(CaseInformation$HH_KEY, CaseInformation$Case_Key),]
+IndividaulBioData <- IndividaulBioData[order(IndividaulBioData$HH_KEY, IndividaulBioData$Case_Key),]
+
+
+## Clean numeric variables with NAs
+IndividaulBioData$IndiviualFinancialSituation.Wages.HowMuchProceedsFromHome[is.na(IndividaulBioData$IndiviualFinancialSituation.Wages.HowMuchProceedsFromHome)] <- 0
+IndividaulBioData$IndiviualFinancialSituation.Wages.IrregularEmploymentAmount[is.na(IndividaulBioData$IndiviualFinancialSituation.Wages.IrregularEmploymentAmount)] <- 0
+
+## IndividaulBioData$IndiviualFinancialSituation.Wages.RegularEmploymentAmount replaced by IndiviualFinancialSituation.Wages.RegularEmployment
+IndividaulBioData$IndiviualFinancialSituation.Wages.RegularEmployment[is.na(IndividaulBioData$IndiviualFinancialSituation.Wages.RegularEmployment)] <- 0
+
+
+############################################################
 cat("\n\nWrite backup\n")
 
-write.csv(household, "data/household.csv")
-write.csv(CaseInformation, "data/CaseInformation.csv")
-write.csv(IndividaulBioData , "data/IndividaulBioData.csv")
-write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies.csv")
+write.csv(household, "data/household.csv", row.names = FALSE)
+write.csv(CaseInformation, "data/CaseInformation.csv", row.names = FALSE)
+write.csv(IndividaulBioData , "data/IndividaulBioData.csv", row.names = FALSE)
+write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies.csv", row.names = FALSE)
 
