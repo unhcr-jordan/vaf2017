@@ -8,6 +8,7 @@ packages <- c(
   ### Packages for Premodeling Stage
 
   ## Data Manipulation
+  "viridis",
   "lubridate",
   "date","gdata","zoo", ## playing with date
   "dplyr",  "data.table", "doBy","tidyr", ## Data manipulation
@@ -179,6 +180,7 @@ library("kableExtra")
 #library("tables")
 library("rmarkdown")
 
+library("viridis")
 library("survey")
 library("ggrepel")
 

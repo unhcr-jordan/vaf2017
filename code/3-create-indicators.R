@@ -70,13 +70,21 @@ for(i in 1:164)
   indicator.frame	<- as.character(indicator[ i, c("frame")])
   indicator.listname <- as.character(indicator[ i, c("listname")])
   indicator.calculation	<- as.character(indicator[ i, c("calculation")])
-  cat(paste0(i, "- Load  indicator: ", indicator.label,"\n"))
+  cat(paste0(i, "- Load  indicator: ", indicator.label," of type: ",indicator.type,"\n"))
 
   ## Build and run the formula to insert the indicator in the right frame  ###########################
-  indic.formula <- paste0(indicator.frame,"$",indicator.fullname,"<-",indicator.calculation )
+  indic.formula <- paste0(indicator.frame,"$",indicator.fullname," <- ",indicator.calculation )
   if (file.exists("code/temp.R")) file.remove("code/temp.R")
   cat(indic.formula, file="code/temp.R" , sep = "\n", append=TRUE)
+  cat("####", file="code/temp.R" , sep = "\n", append=TRUE)
+
+  ## do a check on indicator variable type
+  indicator.type2 <- indicator.type
+  ifelse(indicator.type=="select_one", indicator.type2 <- "character", indicator.type2 <- indicator.type)
+
+  cat(paste0(indicator.frame,"$",indicator.fullname," <- as.",indicator.type2,"(",indicator.frame,"$",indicator.fullname,")"), file="code/temp.R" , sep = "\n", append=TRUE)
   cat(paste0("str(",indicator.frame,"$",indicator.fullname,")"), file="code/temp.R" , sep = "\n", append=TRUE)
+  cat(paste0("summary(",indicator.frame,"$",indicator.fullname,")"), file="code/temp.R" , sep = "\n", append=TRUE)
   source("code/temp.R")
   cat(paste0(i, "- Executed  indicator: ", indicator.label,"\n"))
   if (file.exists("code/temp.R")) file.remove("code/temp.R")
@@ -136,21 +144,23 @@ rm(dicotemp,dicotemp1)
 #View(household[ , c("section2.total_hh", "mf", "adultchild")])
 
 ## label Variables
+cat("\n\n quick check on labeling\n")
 household <- kobo_label(household , dico)
+CaseInformation <- kobo_label(CaseInformation, dico)
+IndividaulBioData <- kobo_label(IndividaulBioData, dico)
+
+cat("\n\n Re-encoding now the data plus indicators based on the the full dictionnary\n")
+household <- kobo_encode(household, dico)
+CaseInformation <- kobo_encode(CaseInformation, dico)
+IndividaulBioData <- kobo_encode(IndividaulBioData, dico)
+InformationNotRegFamilies <- kobo_encode(InformationNotRegFamilies, dico)
+
 cat("\n\nWrite backup\n")
-
-write.csv(dico, paste0("data/dico2_",form,".csv"), row.names = FALSE)
-
-write.csv(household, "data/household2.csv", row.names = FALSE)
-write.csv(CaseInformation, "data/CaseInformation2.csv", row.names = FALSE)
-
-summary(household)
+write.csv(dico, paste0("data/dico2_",form,".csv"), row.names = FALSE, na = "")
 
 
-#write.csv((str(household)), "data/household3.csv", row.names = FALSE)
-#write.csv(str(CaseInformation), "data/CaseInformation3.csv", row.names = FALSE)
-
-
-write.csv(IndividaulBioData , "data/IndividaulBioData2.csv", row.names = FALSE)
-write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies2.csv", row.names = FALSE)
+write.csv(household, "data/household2.csv", row.names = FALSE, na = "")
+write.csv(CaseInformation, "data/CaseInformation2.csv", row.names = FALSE, na = "")
+write.csv(IndividaulBioData , "data/IndividaulBioData2.csv", row.names = FALSE, na = "")
+write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies2.csv", row.names = FALSE, na = "")
 

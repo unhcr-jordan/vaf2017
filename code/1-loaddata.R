@@ -56,7 +56,7 @@ InformationNotRegFamilies <- read_csv("data/BaslineFirst2017_InformationNotRegFa
 # nrow(as.data.frame(unique(household$KEY)))
 
 cat("\n\nCheck Household\n")
-household1 <- household
+#household1 <- household
 datalabel <- as.data.frame( names(household))
 names(datalabel)[1] <- "nameor"
 datalabel$nameor <- as.character(datalabel$nameor)
@@ -78,7 +78,7 @@ household <- household[which(household$VolunteerInformation.CaseStatus == "Avail
 ## Case
 
 cat("\n\nCheck cases\n")
-CaseInformation1 <- CaseInformation
+#CaseInformation1 <- CaseInformation
 datalabel <- as.data.frame( names(CaseInformation))
 names(datalabel)[1] <- "nameor"
 datalabel$nameor <- as.character(datalabel$nameor)
@@ -96,7 +96,7 @@ CaseInformation <- join(y = household, x = CaseInformation, by="SET.OF.CaseInfor
 ## Bio Data
 # names(IndividaulBioData)
 cat("\n\nCheck individuals\n")
-IndividaulBioData2 <- IndividaulBioData
+#IndividaulBioData1 <- IndividaulBioData
 datalabel <- as.data.frame( names(IndividaulBioData))
 names(datalabel)[1] <- "nameor"
 datalabel$nameor <- as.character(datalabel$nameor)
@@ -137,29 +137,19 @@ cat("\n\n\nNow re-encode data and label variables \n\n\n\n")
 cat("\n\n\n Household \n\n\n\n")
 # household1 <- kobo_split_multiple(household, dico)
 household <- kobo_split_multiple(household, dico)
-household <- kobo_encode(household, dico)
 household <- kobo_label(household , dico)
-
 
 cat("\n\n\n Case \n\n\n\n")
 CaseInformation <- kobo_split_multiple(CaseInformation, dico)
-CaseInformation <- kobo_encode(CaseInformation, dico)
 CaseInformation <- kobo_label(CaseInformation , dico)
-
 
 cat("\n\n\n Individuals \n\n\n\n")
 IndividaulBioData <- kobo_split_multiple(IndividaulBioData, dico)
-IndividaulBioData <- kobo_encode(IndividaulBioData, dico)
 IndividaulBioData <- kobo_label(IndividaulBioData , dico)
-
 
 cat("\n\n\n Case \n\n\n\n")
 InformationNotRegFamilies <- kobo_split_multiple(InformationNotRegFamilies, dico)
-InformationNotRegFamilies <- kobo_encode(InformationNotRegFamilies, dico)
 InformationNotRegFamilies <- kobo_label(InformationNotRegFamilies , dico)
-
-
-
 
 #######################################################################
 ### Edit data-sets before creating indicators #########################
@@ -204,8 +194,8 @@ IndividaulBioData$IndiviualFinancialSituation.Wages.RegularEmployment[is.na(Indi
 ############################################################
 cat("\n\nWrite backup\n")
 
-write.csv(household, "data/household.csv", row.names = FALSE)
-write.csv(CaseInformation, "data/CaseInformation.csv", row.names = FALSE)
-write.csv(IndividaulBioData , "data/IndividaulBioData.csv", row.names = FALSE)
-write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies.csv", row.names = FALSE)
+write.csv(household, "data/household.csv", row.names = FALSE, na = "")
+write.csv(CaseInformation, "data/CaseInformation.csv", row.names = FALSE, na = "")
+write.csv(IndividaulBioData , "data/IndividaulBioData.csv", row.names = FALSE, na = "")
+write.csv(InformationNotRegFamilies, "data/InformationNotRegFamilies.csv", row.names = FALSE, na = "")
 

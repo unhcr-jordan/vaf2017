@@ -132,14 +132,13 @@ data.svy.rake.coa <- rake(
 )
 weights.replication <- as.data.frame(weights(data.svy.rake.coa,type="replication", final=FALSE))
 weights.sampling <- as.data.frame(weights(data.svy.rake.coa,type="sampling", final=FALSE))
-weights.sampling <- as.data.frame(weights(data.svy.rake.coa,type="sampling", final=TRUE))
 
 weights.analysis <- as.data.frame(weights(data.svy.rake.coa,type="analysis", final=FALSE))
 
 summary(weights.analysis)
 names(weights.analysis)[1] <- "weight"
 weights.analysis$weight2 <- weights.analysis$weight/100
-write.csv(weights.analysis, "out/weight.csv", row.names = FALSE)
+write.csv(weights.analysis, "out/weight.csv", row.names = FALSE, na = "")
 
 cat("Trim weight for area of Asylumn\n")
 data.svy.rake.trim <- trimWeights(data.svy.rake.coa,
@@ -148,3 +147,5 @@ data.svy.rake.trim <- trimWeights(data.svy.rake.coa,
                                   strict = TRUE)
 
 weights <- as.data.frame(weights(data.svy.rake.trim))
+write.csv(weights, "data/weights.csv", row.names = FALSE, na = "")
+
